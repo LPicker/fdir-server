@@ -1,0 +1,5 @@
+{
+  "oxc.lint.enable": true,
+  "oxc.lint.configPath": ".oxlintrc.json",
+  "oxc.fmt.configPath": ".oxfmtrc.json"
+}

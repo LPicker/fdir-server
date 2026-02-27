@@ -1,0 +1,20 @@
+{
+  "name": "file-server-based-http",
+  "version": "1.0.0",
+  "description": "基于http协议实现的文件服务器",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.50.0"
+  }
+}
