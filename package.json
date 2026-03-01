@@ -1,20 +1,26 @@
 {
   "name": "file-server-based-http",
   "version": "1.0.0",
-  "description": "基于http协议实现的文件服务器",
+  "description": "基于 http 协议实现的文件服务器",
   "keywords": [],
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.js",
+  "main": "./dist/server.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/server.js",
+    "dev": "tsm src/server.ts",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix"
   },
   "devDependencies": {
+    "@types/node": "^22.13.10",
     "oxfmt": "^0.35.0",
-    "oxlint": "^1.50.0"
+    "oxlint": "^1.50.0",
+    "tsm": "^2.3.0",
+    "typescript": "^5.8.2"
   }
 }

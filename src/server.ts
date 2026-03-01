@@ -1,12 +1,16 @@
 import * as http from "node:http";
-import { Directory } from "./directory.js";
+import { Directory, type FileEntry } from "./directory.js";
+
+export interface FileEntryWithPath extends FileEntry {}
 
 export class Server {
-  constructor(port) {
+  port: number;
+
+  constructor(port: number) {
     this.port = port;
   }
 
-  start() {
+  start(): void {
     const directoryViews = this.getDirectoryViews();
     http
       .createServer((req, res) => {
@@ -17,15 +21,15 @@ export class Server {
     console.log(`Server running at http://localhost:${this.port}/`);
   }
 
-  getFileItemView(file) {
+  getFileItemView(file: FileEntryWithPath): string {
     return `
       <li class="${file.isDirectory ? "folder" : ""}">
-        <a href="${file.path}">${file.name}${file.isDirectory ? "/" : ""}</a>
+        <a href="${file.name}">${file.name}${file.isDirectory ? "/" : ""}</a>
       </li>
     `;
   }
 
-  getDirectoryViews() {
+  getDirectoryViews(): string {
     const list = new Directory(".").list();
     return `
       <ul>

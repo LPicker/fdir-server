@@ -1,11 +1,18 @@
 import fs from "node:fs";
 
+export interface FileEntry {
+  name: string;
+  isDirectory: boolean;
+}
+
 export class Directory {
-  constructor(path) {
+  path: string;
+
+  constructor(path: string) {
     this.path = path;
   }
 
-  list() {
+  list(): FileEntry[] {
     const list = fs.readdirSync(this.path, { withFileTypes: true });
     return list.map((f) => ({
       name: f.name,
