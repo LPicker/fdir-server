@@ -1,15 +1,24 @@
 {
   "name": "fdir-server",
   "version": "1.0.0",
-  "description": "基于 http 协议实现的文件服务器",
-  "keywords": [],
+  "description": "基于 HTTP 协议实现的文件服务器，支持目录浏览和文件预览",
+  "keywords": [
+    "file-server",
+    "http-server",
+    "static-files",
+    "directory-listing"
+  ],
   "license": "ISC",
-  "author": "",
+  "author": "LPicker <https://github.com/LPicker>",
   "type": "module",
   "main": "./dist/server.js",
+  "types": "./dist/server.d.ts",
   "bin": {
-    "fdir": "./dist/cli.js"
+    "fdir": "dist/cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "cli": "node ./dist/cli.js",
@@ -18,6 +27,9 @@
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",

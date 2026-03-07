@@ -1,0 +1,20 @@
+# 开发配置文件
+.gitignore
+.oxfmtrc.json
+.vscode
+
+# 开发依赖和源码
+src
+node_modules
+
+# 文档
+踩坑记录.md
+
+# 测试文件
+*.test.ts
+*.spec.ts
+tests
+
+# 其他
+.DS_Store
+Thumbs.db
