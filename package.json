@@ -1,5 +1,5 @@
 {
-  "name": "file-server-based-http",
+  "name": "fdir-server",
   "version": "1.0.0",
   "description": "基于 http 协议实现的文件服务器",
   "keywords": [],
@@ -7,10 +7,13 @@
   "author": "",
   "type": "module",
   "main": "./dist/server.js",
+  "bin": {
+    "fdir": "./dist/cli.js"
+  },
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/server.js",
-    "dev": "nodemon --exec tsm src/index.ts",
+    "cli": "node ./dist/cli.js",
+    "dev": "nodemon --exec tsm src/cli.ts",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
