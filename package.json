@@ -6,10 +6,20 @@
     "file-server",
     "http-server",
     "static-files",
-    "directory-listing"
+    "directory-listing",
+    "file-preview",
+    "nodejs"
   ],
   "license": "ISC",
   "author": "LPicker <https://github.com/LPicker>",
+  "homepage": "https://github.com/LPicker/file-server-based-http#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LPicker/file-server-based-http.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LPicker/file-server-based-http/issues"
+  },
   "type": "module",
   "main": "./dist/server.js",
   "types": "./dist/server.d.ts",

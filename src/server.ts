@@ -39,11 +39,24 @@ export default class Server {
     this.directory = new Directory(dir);
   }
 
-  start(): void {
+  start(cb?: (port: number) => void): void {
     const server = http.createServer((req, res) => this.handleRequest(req, res));
-    server.listen(this.port);
+
+    server.listen(this.port, () => {
+      if (typeof cb === "function") {
+        cb(this.port);
+      }
+    });
+
     server.on("error", (err) => {
-      console.error("Server error:", err);
+      if ((err as any).code === "EADDRINUSE") {
+        console.warn(`\nPort ${this.port} is already in use, trying ${this.port + 1} ...`);
+        this.port++;
+        this.start(cb);
+      } else {
+        console.error("Server error:", err);
+        process.exit(1);
+      }
     });
   }
 
