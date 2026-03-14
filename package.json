@@ -1,6 +1,6 @@
 {
   "name": "fdir-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "基于 HTTP 协议实现的文件服务器，支持目录浏览和文件预览",
   "keywords": [
     "file-server",
@@ -12,13 +12,13 @@
   ],
   "license": "ISC",
   "author": "LPicker <https://github.com/LPicker>",
-  "homepage": "https://github.com/LPicker/file-server-based-http#readme",
+  "homepage": "https://github.com/LPicker/fdir-server#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LPicker/file-server-based-http.git"
+    "url": "git+https://github.com/LPicker/fdir-server.git"
   },
   "bugs": {
-    "url": "https://github.com/LPicker/file-server-based-http/issues"
+    "url": "https://github.com/LPicker/fdir-server/issues"
   },
   "type": "module",
   "main": "./dist/server.js",
