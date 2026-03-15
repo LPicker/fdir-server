@@ -47,9 +47,10 @@ export class Directory {
    * 检查路径是否安全（在 rootPath 范围内）
    */
   private isPathSafe(resolvedPath: string): boolean {
-    const normalizedRoot = path.normalize(this.rootPath);
-    const normalizedResolved = path.normalize(resolvedPath);
-    return normalizedResolved.startsWith(normalizedRoot + path.sep) || normalizedResolved === normalizedRoot;
+    const relative = path.relative(this.rootPath, resolvedPath);
+    // 如果路径在 rootPath 内，relative 返回相对路径
+    // 如果路径在 rootPath 外，relative 返回以 ".." 开头或绝对路径
+    return !relative.startsWith('..') && !path.isAbsolute(relative);
   }
 
   readPath(filePath: string): FileEntry[] | string | Buffer | null {
