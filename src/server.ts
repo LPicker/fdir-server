@@ -1,33 +1,30 @@
 import * as http from "node:http";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { Directory, type FileEntry } from "./directory.js";
 import { getMimeType } from "./utils/file.js";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function getContentTypeStr(mimeType: string): string {
   return `${mimeType}; charset=utf-8`;
 }
 
 function getHtmlPage(title: string, content: string): string {
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title}</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    ul { list-style-type: none; padding: 0; }
-    li { padding: 4px 0; }
-    a { text-decoration: none; color: #0066cc; }
-    a:hover { text-decoration: underline; }
-    .folder { color: #666; }
-  </style>
-</head>
-<body>
-  <h1>${title}</h1>
-  ${content}
-</body>
-</html>`;
+  const templatePath = path.join(__dirname, "templates", "index.html");
+  let template: string;
+
+  try {
+    template = fs.readFileSync(templatePath, "utf-8");
+  } catch (err) {
+    console.error("Failed to read template:", err);
+    // Fallback to simple template if file not found
+    return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${title}</h1>${content}</body></html>`;
+  }
+
+  return template.replace(/\{\{title\}\}/g, title).replace(/\{\{content\}\}/g, content);
 }
 
 export default class Server {
@@ -111,9 +108,9 @@ export default class Server {
     const items = list
       .map(
         (file) => `
-      <li class="${file.isDirectory ? "folder" : ""}">
-        <a href="./${file.name}${file.isDirectory ? "/" : ""}">${file.name}${file.isDirectory ? "/" : ""}</a>
-      </li>`,
+        <li class="${file.isDirectory ? "folder" : ""}">
+          <a href="./${file.name}${file.isDirectory ? "/" : ""}">${file.name}${file.isDirectory ? "/" : ""}</a>
+        </li>`,
       )
       .join("");
 

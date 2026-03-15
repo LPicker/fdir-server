@@ -1,6 +1,6 @@
 {
   "name": "fdir-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "基于 HTTP 协议实现的文件服务器，支持目录浏览和文件预览",
   "keywords": [
     "file-server",
