@@ -36,17 +36,25 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:run && npm run test:e2e"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.13.10",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^22.19.15",
+    "@vitest/coverage-v8": "^4.1.0",
     "nodemon": "^3.1.14",
     "oxfmt": "^0.35.0",
     "oxlint": "^1.50.0",
     "tsm": "^2.3.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^4.1.0"
   }
 }
