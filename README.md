@@ -4,7 +4,7 @@
 
 ## 视频简介
 
-[![fdir-server 介绍](https://github.com/LPicker/fdir-server/raw/master/intro.gif)](https://www.bilibili.com/video/BV1cwXrBmEWb)
+[![fdir-server 介绍](https://raw.githubusercontent.com/LPicker/fdir-server/master/intro.gif)](https://www.bilibili.com/video/BV1cwXrBmEWb)
 
 📺 [在 B 站查看视频介绍](https://www.bilibili.com/video/BV1cwXrBmEWb)
 

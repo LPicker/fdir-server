@@ -1,6 +1,6 @@
 {
   "name": "fdir-server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "基于 HTTP 协议实现的文件服务器，支持目录浏览和文件预览",
   "keywords": [
     "file-server",
@@ -27,7 +27,9 @@
     "fdir": "dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc && node scripts/copy-static-files.js",
