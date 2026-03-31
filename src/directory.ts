@@ -20,12 +20,14 @@ const BINARY_EXTENSIONS = new Set([
   // 字体
   '.woff', '.woff2', '.ttf', '.eot', '.otf',
   // 其他二进制
-  '.psd', '.ai', '.eps', '.obj', '.stl', '.blend',
+  '.ai', '.eps', '.obj', '.stl', '.blend',
 ]);
 
 export interface FileEntry {
   name: string;
   isDirectory: boolean;
+  size?: number;        // 文件大小（字节），文件夹为 undefined
+  lastModified?: Date;  // 最后修改时间
 }
 
 export class Directory {
@@ -35,12 +37,36 @@ export class Directory {
     this.rootPath = path.resolve(__dirname, dirPath);
   }
 
+  /**
+   * 获取文件统计信息
+   */
+  private getFileStats(filePath: string): Partial<Pick<FileEntry, 'size' | 'lastModified'>> {
+    try {
+      const stats = fs.statSync(filePath);
+      return {
+        size: stats.size,
+        lastModified: stats.mtime,
+      };
+    } catch {
+      // 忽略统计失败的错误
+      return {};
+    }
+  }
+
   list(): FileEntry[] {
     const list = fs.readdirSync(this.rootPath, { withFileTypes: true });
-    return list.map((f) => ({
-      name: f.name,
-      isDirectory: f.isDirectory(),
-    }));
+    return list.map((f) => {
+      const entry: FileEntry = {
+        name: f.name,
+        isDirectory: f.isDirectory(),
+      };
+      // 获取文件统计信息
+      if (!f.isDirectory()) {
+        const stats = this.getFileStats(path.join(this.rootPath, f.name));
+        Object.assign(entry, stats);
+      }
+      return entry;
+    });
   }
 
   /**
@@ -48,7 +74,7 @@ export class Directory {
    */
   private isPathSafe(resolvedPath: string): boolean {
     const relative = path.relative(this.rootPath, resolvedPath);
-    // 如果路径在 rootPath 内，relative 返回相对路径
+    // 如果路径在 rootPath 内，relative 返回相对路径或空字符串（相同路径）
     // 如果路径在 rootPath 外，relative 返回以 ".." 开头或绝对路径
     return !relative.startsWith('..') && !path.isAbsolute(relative);
   }
@@ -75,10 +101,18 @@ export class Directory {
       const list = fs.readdirSync(resolvedPath, {
         withFileTypes: true,
       });
-      return list.map((f) => ({
-        name: f.name,
-        isDirectory: f.isDirectory(),
-      }));
+      return list.map((f) => {
+        const entry: FileEntry = {
+          name: f.name,
+          isDirectory: f.isDirectory(),
+        };
+        // 获取文件统计信息
+        if (!f.isDirectory()) {
+          const stats = this.getFileStats(path.join(resolvedPath, f.name));
+          Object.assign(entry, stats);
+        }
+        return entry;
+      });
     }
 
     // 获取扩展名，判断是否为常见二进制文件

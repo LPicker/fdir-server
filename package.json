@@ -1,6 +1,6 @@
 {
   "name": "fdir-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "基于 HTTP 协议实现的文件服务器，支持目录浏览和文件预览",
   "keywords": [
     "file-server",
@@ -41,6 +41,8 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
     "test:all": "npm run test:run && npm run test:e2e"
   },
   "engines": {

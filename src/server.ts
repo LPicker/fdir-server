@@ -3,6 +3,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { Directory, type FileEntry } from "./directory.js";
 import { getMimeType } from "./utils/file.js";
+import { formatSize, formatDate, escapeHtml } from "./utils/format.js";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -49,6 +50,8 @@ export default class Server {
       if ((err as any).code === "EADDRINUSE") {
         console.warn(`\nPort ${this.port} is already in use, trying ${this.port + 1} ...`);
         this.port++;
+        // 关闭当前 server 实例，避免资源泄露
+        server.close();
         this.start(cb);
       } else {
         console.error("Server error:", err);
@@ -69,7 +72,12 @@ export default class Server {
       if (!req.url || req.url === "/") {
         const rootList = this.directory.list();
         const html = this.renderDirectoryPage("Index of /", rootList);
-        this.sendResponse(res, html, 200);
+        if (req.method === "HEAD") {
+          res.writeHead(200, { "Content-Type": getContentTypeStr("text/html") });
+          res.end();
+        } else {
+          this.sendResponse(res, html, 200);
+        }
       } else {
         // 改进 URL 路径解析：移除前导 / 并规范化
         const requestPath = req.url.startsWith("/") ? req.url.slice(1) : req.url;
@@ -77,10 +85,16 @@ export default class Server {
 
         if (result === null) {
           res.writeHead(404, { "Content-Type": getContentTypeStr("text/plain") });
-          res.end("Not Found");
+          res.end(req.method === "HEAD" ? "" : "Not Found");
         } else if (Array.isArray(result)) {
           const html = this.renderDirectoryPage(`Index of /${requestPath}`, result);
-          this.sendResponse(res, html, 200);
+          if (req.method === "HEAD") {
+            res.writeHead(200, { "Content-Type": getContentTypeStr("text/html") });
+            res.end();
+          } else {
+            res.writeHead(200, { "Content-Type": getContentTypeStr("text/html") });
+            res.end(html);
+          }
         } else {
           // 文件内容
           const mimeType = getMimeType(req.url);
@@ -102,18 +116,41 @@ export default class Server {
 
   private renderDirectoryPage(title: string, list: FileEntry[]): string {
     if (list.length === 0) {
-      return getHtmlPage(title, "<p>Empty Directory</p>");
+      return getHtmlPage(escapeHtml(title), "<p>Empty Directory</p>");
     }
 
-    const items = list
+    // 排序：文件夹在前，然后是文件
+    const sorted = [...list].sort((a, b) => {
+      if (a.isDirectory && !b.isDirectory) return -1;
+      if (!a.isDirectory && b.isDirectory) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    const rows = sorted
       .map(
         (file) => `
-        <li class="${file.isDirectory ? "folder" : ""}">
-          <a href="./${file.name}${file.isDirectory ? "/" : ""}">${file.name}${file.isDirectory ? "/" : ""}</a>
-        </li>`,
+        <tr class="${file.isDirectory ? 'folder' : ''}">
+          <td class="name">
+            <a href="./${file.name}${file.isDirectory ? "/" : ""}">${escapeHtml(file.name)}${file.isDirectory ? "/" : ""}</a>
+          </td>
+          <td class="size">${formatSize(file.size)}</td>
+          <td class="modified">${formatDate(file.lastModified)}</td>
+        </tr>`,
       )
       .join("");
 
-    return getHtmlPage(title, `<ul>${items}</ul>`);
+    const table = `
+      <table>
+        <thead>
+          <tr>
+            <th>名称</th>
+            <th>大小</th>
+            <th>修改时间</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+
+    return getHtmlPage(escapeHtml(title), table);
   }
 }

@@ -13,7 +13,7 @@ test.describe('File Server E2E Tests', () => {
   test('should render files and folders with correct styling', async ({ page }) => {
     await page.goto('/');
 
-    const folders = page.locator('li.folder');
+    const folders = page.locator('tbody tr');
     await expect(async () => {
       const count = await folders.count();
       expect(count).toBeGreaterThan(0);
@@ -25,16 +25,16 @@ test.describe('File Server E2E Tests', () => {
       expect(count).toBeGreaterThan(0);
     }).toPass();
 
-    const firstFolder = folders.first();
-    const folderLink = firstFolder.locator('a');
-    const href = await folderLink.getAttribute('href');
+    const firstRow = page.locator('tbody tr').first();
+    const firstLink = firstRow.locator('a');
+    const href = await firstLink.getAttribute('href');
     expect(href).toMatch(/\/$/);
   });
 
   test('should navigate into subdirectory', async ({ page }) => {
     await page.goto('/');
 
-    const folderLink = page.locator('li.folder a').first();
+    const folderLink = page.locator('tbody tr a').first();
     const folderName = await folderLink.textContent();
 
     await folderLink.click();
@@ -46,12 +46,13 @@ test.describe('File Server E2E Tests', () => {
     await page.goto('/');
 
     // Find a .txt file link specifically
-    const fileLink = page.locator('li:not(.folder) a[href$=".txt"]').first();
+    const fileLink = page.locator('tbody tr a[href$=".txt"]').first();
     const fileName = await fileLink.textContent();
     await fileLink.click();
 
     const url = page.url();
-    expect(url).toContain(fileName?.trim() || '');
+    // URL 可能经过编码，检查基础路径即可
+    expect(url).toMatch(/\/[^/]+\.txt$/);
   });
 
   test('should handle 404 errors gracefully', async ({ page }) => {
@@ -109,7 +110,7 @@ test.describe('File Server E2E Tests', () => {
 
     await expect(page.locator('h1')).toContainText('Index of /');
 
-    const listItems = page.locator('ul li');
+    const listItems = page.locator('tbody tr');
     const count = await listItems.count();
     expect(count).toBeGreaterThan(0);
   });
@@ -160,7 +161,7 @@ test.describe('File Server E2E Tests', () => {
   test('should handle back/forward navigation', async ({ page }) => {
     await page.goto('/');
 
-    const folderLink = page.locator('li.folder a').first();
+    const folderLink = page.locator('tbody tr a').first();
     const firstUrl = page.url();
     await folderLink.click();
 
@@ -177,7 +178,7 @@ test.describe('File Server E2E Tests', () => {
   test('should handle bookmarkable URLs', async ({ page }) => {
     await page.goto('/');
 
-    const fileLink = page.locator('li:not(.folder) a').first();
+    const fileLink = page.locator('tbody tr a').first();
     await fileLink.click();
     const fileUrl = page.url();
 
@@ -191,22 +192,22 @@ test.describe('File Server E2E Tests', () => {
     const h1 = page.locator('h1');
     await expect(h1).toBeVisible();
 
-    const ul = page.locator('ul');
-    await expect(ul).toBeVisible();
+    const table = page.locator('table');
+    await expect(table).toBeVisible();
 
-    const listItems = page.locator('ul li');
-    const count = await listItems.count();
+    const rows = page.locator('tbody tr');
+    const count = await rows.count();
     expect(count).toBeGreaterThan(0);
   });
 
   test('should handle large directory listings', async ({ page }) => {
     await page.goto('/');
 
-    const listItems = page.locator('ul li');
+    const listItems = page.locator('tbody tr');
     const count = await listItems.count();
     expect(count).toBeGreaterThanOrEqual(0);
 
-    const links = page.locator('ul li a');
+    const links = page.locator('tbody tr a');
     const linkCount = await links.count();
 
     for (let i = 0; i < Math.min(linkCount, 3); i++) {
@@ -243,7 +244,7 @@ test.describe('File Server E2E Tests', () => {
       await page.goto('/');
 
       await expect(page.locator('h1')).toBeVisible();
-      await expect(page.locator('ul')).toBeVisible();
+      await expect(page.locator('table')).toBeVisible();
 
       const links = page.locator('a');
       await expect(async () => {

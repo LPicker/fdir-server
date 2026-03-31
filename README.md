@@ -2,6 +2,12 @@
 
 基于 HTTP 协议实现的文件服务器，支持目录浏览和文件预览。
 
+## 视频简介
+
+[![fdir-server 介绍](https://github.com/LPicker/fdir-server/raw/master/intro.gif)](https://www.bilibili.com/video/BV1cwXrBmEWb)
+
+📺 [在 B 站查看视频介绍](https://www.bilibili.com/video/BV1cwXrBmEWb)
+
 ## 功能特性
 
 - 目录浏览：以列表形式展示目录结构

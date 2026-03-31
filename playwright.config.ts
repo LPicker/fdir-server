@@ -15,4 +15,6 @@ export default defineConfig({
     timeout: 120000,
     reuseExistingServer: true,
   },
+  // 支持 UI 模式运行
+  reporter: process.env.CI ? 'github' : 'list',
 });
